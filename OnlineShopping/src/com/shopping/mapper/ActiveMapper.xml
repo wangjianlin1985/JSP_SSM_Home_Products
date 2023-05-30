@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shopping.mapper.ActiveMapper">
+	<select id="activelist" resultType="activeVO">
+		select * from active 
+		order by createdate desc 
+		limit 6
+	</select>
+	
+	<select id="roleactivecount" parameterType="activeVO" resultType="int">
+		select count(*) from active s
+	</select>
+	
+	<select id="roleactivelist" parameterType="Map" resultType="activeVO">
+		select a.id as id,a.theme as theme,a.message as message,a.createdate from active a 
+		order by createdate desc 
+		limit #{start},#{count}
+	</select>
+	
+	<insert id="addactives" parameterType="active">
+		insert into active(theme,message,creater,createdate) values(#{theme},#{message},#{creater},#{createdate})
+	</insert>
+	
+	<delete id="deleteactive" parameterType="active">
+		delete from active where id =${id}
+	</delete>
+</mapper>

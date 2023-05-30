@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shopping.mapper.InstallMapper">
+	<insert id="insertInstall" parameterType="install">
+		insert into install(userid,goodsid,orderid,status,creater,createdate) values(#{userid},#{goodsid},#{orderid},#{status},#{creater},#{createdate})
+	</insert>
+	
+	<select id="roleinstallcount" parameterType="installVO" resultType="int">
+		select count(*) from install s where 1=1
+		<if test="status != null and status !=0">
+			and s.status=${status}
+		</if>
+	</select>
+	<select id="roleinstalllist" parameterType="Map" resultType="installVO">
+		select s.orderid as orderid,o.ordernum as ordernum,aos.address as address,s.userid as userid,s.goodsid as goodsid,s.status as status,
+		s.createdate as createdate,g.photourl as photourl,g.title as title,u.username as username,g.name as name
+		from install s left join orderdetail o on s.orderid = o.id left join goods g on s.goodsid = g.id LEFT JOIN user u on s.userid = u.id LEFT JOIN
+		(select ad.address,ode.goodsid from orderdetail ode,address ad where ode.address = ad.id) aos on s.goodsid = aos.goodsid
+		where 1=1
+		<if test="status != null and status !=0">
+			and s.status=${status}
+		</if>
+		order by createdate desc 
+		limit #{start},#{count}
+	</select>
+	
+	<select id="selectinstallcountss" parameterType="installVO" resultType="int">
+		select count(*) from install s where userid = #{userid} and goodsid = #{goodsid} and orderid=#{orderid}
+	</select>
+	
+	<update id="roleupdateinstall" parameterType="installVO">
+		update install set status = ${status} where userid = #{userid} and goodsid = #{goodsid} and orderid=#{orderid}
+	</update>
+</mapper>
